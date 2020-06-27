@@ -1,15 +1,46 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const mongoose = require("mongoose");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var questionariesRouter = require('./routes/questionaries');
+const passport = require("./passport/setup");
 
-var app = express();
+const authRouter = require("./routes/auth");
+const indexRouter = require('./routes/index');
+const questionariesRouter = require('./routes/questionaries');
+const pricesRouter = require('./routes/prices');
+
+const app = express();
+
+const { MONGO_URI } = require('./config');
+
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true })
+  .then(console.log(`MongoDB connected ${MONGO_URI}`))
+  .catch(err => console.log(err));
+
+// Bodyparser middleware, extended false does not allow nested payloads
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// Express Session
+app.use(
+  session({
+    secret: "very secret this is",
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,19 +52,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors('*'))
+app.use(cors({ origin: '*' }));
 
+app.use('/auth', authRouter);
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/questionaries', questionariesRouter);
+app.use('/prices', pricesRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
