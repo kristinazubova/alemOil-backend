@@ -28,13 +28,15 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+let mongoStore = new MongoStore({ mongooseConnection: mongoose.connection })
+
 // Express Session
 app.use(
   session({
     secret: "very secret this is",
     resave: false,
     saveUninitialized: true,
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
+    store: mongoStore
   })
 );
 
@@ -52,7 +54,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use('/auth', authRouter);
 app.use('/', indexRouter);

@@ -3,8 +3,6 @@ const router = express.Router();
 const passport = require("passport");
 
 router.post("/", (req, res, next) => {
-  console.log('its alive')
-
   passport.authenticate("local", function (err, user, info) {
     if (err) {
       return res.status(400).json({ errors: err });

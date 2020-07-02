@@ -1,1 +1,1 @@
-{"petrol92":{"fromOilBase":123,"fromOilStation":125},"petrol95":{"fromOilBase":123,"fromOilStation":125},"dieselSummer":{"fromOilBase":123,"fromOilStation":125},"dieselWinter":{"fromOilBase":"456","fromOilStation":125}}
+{"petrol92":{"fromOilBase":"130","fromOilStation":"1400"},"petrol95":{"fromOilBase":157,"fromOilStation":"168"},"dieselSummer":{"fromOilBase":179,"fromOilStation":185},"dieselWinter":{"fromOilBase":"-","fromOilStation":"-"}}

@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
 
 const fs = require('fs');
 
@@ -13,7 +14,7 @@ router.get('/', function (req, res, next) {
   res.end();
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', passport.authenticationMiddleware(), function (req, res, next) {
   let newPrices = {
     "petrol92": {
       "fromOilBase": req.body[0].priceOB,
