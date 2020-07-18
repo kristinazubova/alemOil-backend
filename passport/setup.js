@@ -21,7 +21,23 @@ passport.use(
     User.findOne({ email: email })
       .then(user => {
         if (!user) {
-          return done(null, false, { message: 'User not found' });
+          // return done(null, false, { message: 'User not found' });
+          const newUser = new User({ email, password });
+          // Hash password before saving in database
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) throw err;
+              newUser.password = hash;
+              newUser
+                .save()
+                .then(user => {
+                  return done(null, user);
+                })
+                .catch(err => {
+                  return done(null, false, { message: err });
+                });
+            });
+          });
         } else {
           // Match password
           bcrypt.compare(password, user.password, (err, isMatch) => {
