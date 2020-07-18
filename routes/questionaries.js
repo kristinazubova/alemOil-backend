@@ -14,7 +14,7 @@ router.post('/', function (req, res, next) {
 
   mailTransport.sendMail({
     from: EMAIL_USER,
-    to: 'orders@alemoil.com',
+    to: 'opt@alemoil.com',
     subject: 'Новая заявка на оптовую закупку',
     html: createMessage(req.body)
   }, function (err, info) {
