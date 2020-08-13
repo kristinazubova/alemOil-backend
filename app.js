@@ -54,7 +54,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors({ origin: 'http://www.alemoil.com', credentials: true }));
+app.use(cors({ origin: ['http://www.alemoil.com', 'http://alemoil.com'], credentials: true }));
 
 app.use('/api/auth', authRouter);
 app.use('/api/', indexRouter);
